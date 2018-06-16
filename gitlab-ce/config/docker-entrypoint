@@ -1,0 +1,11 @@
+!/bin/bash
+
+set -xe
+# Register the runner
+/entrypoint register --non-interactive \
+            --url ${REGISTRATION_URL} \
+            --executor ${REGISTRATION_EXECUTOR} \
+            --docker-image ${REGISTRATION_IMAGE}
+# Start the runner
+/entrypoint run --user=gitlab-runner \
+        --working-directory=/home/gitlab-runner

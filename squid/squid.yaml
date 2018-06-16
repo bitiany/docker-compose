@@ -1,0 +1,14 @@
+version: "2" 
+services:
+  squid:
+    container_name: squid
+    image: sameersbn/squid
+    hostname: squid
+    volumes:
+      - ./:/etc/squid3
+    ports:
+      - 3128:3128
+    cap_add: 
+      - NET_ADMIN
+    restart: on-failure:1
+    mem_limit: 20m

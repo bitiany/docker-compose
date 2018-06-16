@@ -1,0 +1,12 @@
+mosquitto:
+  container_name: mosquitto
+  image: eclipse-mosquitto
+  hostname: mosquitto
+  volumes:
+    - ./config:/mosquitto/config
+    - $HOME/opt/data/mosquitto/data:/mosquitto/data
+    - $HOME/opt/data/mosquitto/log:/mosquitto/log
+  ports:
+    - 1883:1883/tcp
+    - 9001:9001/tcp
+  mem_limit: 20m

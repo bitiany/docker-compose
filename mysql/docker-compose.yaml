@@ -1,0 +1,14 @@
+mysql:
+  restart: always
+  image: mysql:5.7
+  container_name: mysql57
+  ports:
+    - "3306:3306"
+  volumes:
+    - $HOME/opt/data/mysql:/var/lib/mysql
+    - ./mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+  environment:
+    - MYSQL_ROOT_PASSWORD=123456
+    - MYSQL_USER=k12edu
+    - MYSQL_PASSWORD=123123
+    

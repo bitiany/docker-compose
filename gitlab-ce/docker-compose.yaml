@@ -1,0 +1,39 @@
+version: "3"
+services:
+  gitlab:
+    restart: always
+    image: gitlab/gitlab-ce:latest
+    container_name: gitlab-ce
+    ports:
+      - "6443:443"
+      - "22:22"
+      - "80:80"
+    env_file:
+      - .env
+    environment: 
+      GITLAB_OMNIBUS_CONFIG: |
+        gitlab_rails['external_url']='${external_url}'
+        gitlab_rails['initial_shared_runners_registration_token']='${initial_runner_token}'
+    volumes:
+      - ./config:/etc/gitlab
+      - $HOME/opt/data/gitlab/logs:/var/log/gitlab
+      - $HOME/opt/data/gitlab/data:/var/opt/gitlab
+  gitlab-runner:
+    restart: always
+    image: gitlab/gitlab-runner:alpine
+    container_name: gitlab-runner
+    depends_on: 
+      - gitlab
+    env_file:
+      - .env
+    # environment:
+    #   REGISTRATION_TOKEN: ${initial_runner_token}
+    #   REGISTRATION_URL: ${registration_url}
+    #   REGISTRATION_EXECUTOR: ${registration_executor}
+    #   REGISTRATION_IMAGE: ${registration_image}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config/config.toml:/etc/gitlab-runner/config.toml
+      # - ./docker-entrypoint:/root/docker-entrypoint.sh
+    # command: run --user=gitlab-runner  --working-directory=/home/gitlab-runner &&  gitlab-ci-multi-runner register --non-interactive  --url ${registration_url}  --executor ${registration_executor}  --docker-image ${registration_image} 
+      

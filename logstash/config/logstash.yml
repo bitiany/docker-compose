@@ -1,0 +1,8 @@
+pipeline:
+  workers: 2
+  batch:
+    size: 125
+    delay: 50
+path:
+  queue: "/tmp/${QUEUE_DIR:queue}"
+  config: "/usr/share/logstash/config/normal.conf"

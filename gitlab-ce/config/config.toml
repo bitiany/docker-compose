@@ -1,0 +1,16 @@
+concurrent = 1
+check_interval = 0
+
+[[runners]]
+  name = "436e07318488"
+  url = "http://gitlab.gdyang.cn/"
+  token = "NDl1ZjNtenMxcWR6NXZnbw=="
+  executor = "docker"
+  [runners.docker]
+    tls_verify = false
+    image = "maven:3.5-jdk-8"
+    privileged = false
+    disable_cache = false
+    volumes = ["/cache"]
+    shm_size = 0
+  [runners.cache]

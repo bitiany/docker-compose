@@ -1,0 +1,14 @@
+redis:
+  restart: always
+  image: redis:4.0.8-alpine
+  container_name: redis
+  ports:
+    - "6379:6379"
+  volumes:
+    - $HOME/opt/data/redis:/var/lib/redis
+    - ./redis.conf:/etc/redis/redis.conf
+  environment:
+    - REDIS_PASSWORD=123456
+  command:  redis-server /etc/redis/redis.conf
+  # sed -i "/# requirepass/a\requirepass 123456" /etc/redis/redis.conf && 
+    

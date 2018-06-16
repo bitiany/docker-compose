@@ -1,0 +1,72 @@
+version: '2'
+networks:
+  esnet:
+    driver: bridge
+services:
+  logstash:
+    container_name: logstash
+    image: docker.elastic.co/logstash/logstash:6.2.4
+    hostname: logstash
+    volumes:
+      - ./config/:/usr/share/logstash/config/
+      - $HOME/opt/data/logstash/logs/:/usr/share/logstash/logs/
+    ports:
+      - 1883:1883/tcp
+      - 9001:9001/tcp
+    # command: logstash -f /usr/share/logstash/config/*.conf
+    # mem_limit: 20m
+    networks:
+      - esnet
+    links:
+      - elasticsearch
+    depends_on:  
+      - elasticsearch
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.0.2
+    ports: 
+      - 9200:9200
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=127.0.0.1
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - $HOME/opt/data/elasticsearch/data:/usr/share/elasticsearch/data
+    networks:
+      - esnet
+    mem_limit: 1g
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:6.2.4
+    environment:
+      - "constraint:node==mh-kibana"
+      - "ELASTICSEARCH_URL: http://elasticsearch:9200/"
+    ports:  
+      - 5601:5601
+    depends_on:  
+      - elasticsearch
+    networks:
+      - esnet
+    # inks:
+    #   - elasticsearch
+  filebeat:
+    container_name: filebeat
+    image: prima/filebeat
+    networks:
+      - esnet
+    hostname: filebeat
+    restart: always
+    volumes:
+      - ./conf/filebeat.yml:/filebeat.yml
+      - $HOME/opt/data/filebeat/upload:/data/logs
+      # - /Users/gdyang/opt/data/filebeat/registry:/etc/registry

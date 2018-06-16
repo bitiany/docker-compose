@@ -1,0 +1,16 @@
+docker-dns:
+  container_name: docker-dns
+  image: jpillora/dnsmasq
+  hostname: docker-dns
+  volumes:
+    # - /dockerdata/docker-dns/resolv.dnsmasq:/etc/resolv.dnsmasq
+    # - /dockerdata/docker-dns/dnsmasqhosts/:/etc/dnsmasqhosts
+    - ./dnsmasq.conf:/etc/dnsmasq.conf
+    # - /etc/localtime:/etc/localtime:ro
+  ports:
+    - 53:53/tcp
+    - 53:53/udp
+  cap_add: 
+    - NET_ADMIN
+  restart: on-failure:1
+  mem_limit: 20m
